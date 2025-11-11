@@ -74,6 +74,51 @@
       .rightcol{grid-template-columns:1fr}
       .col-span-6,.col-span-12{grid-column:span 1}
     }
+.btn-back-top {
+  animation: pulseGlow 2s infinite alternate;
+}
+@keyframes pulseGlow {
+  from {
+    box-shadow: 0 0 10px rgba(186, 255, 55, 0.4);
+  }
+  to {
+    box-shadow: 0 0 22px rgba(190, 255, 80, 0.9);
+  }
+}
+
+/* Responsive layout fix */
+@media (max-width: 768px) {
+  .btn-back-top {
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .title {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .title h1 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .title .sub {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .toolbar {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+}
 
     /* Cards */
     .card{
