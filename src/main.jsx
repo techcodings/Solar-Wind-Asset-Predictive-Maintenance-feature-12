@@ -34,31 +34,12 @@ const App = () => {
     <>
       {/* ✅ FIXED “Back to Home” on top-right */}
       <a
-        href="https://energy-verse-portal.netlify.app/?feature=10"
-        className="btn-back-top"
-        style={{
-          position: "fixed",
-          top: "16px",
-          right: "24px",
-          background: "linear-gradient(90deg, #d8ff4b, #9aff64)",
-          color: "#0b0f06",
-          padding: "10px 18px",
-          borderRadius: "10px",
-          fontWeight: "700",
-          textDecoration: "none",
-          boxShadow: "0 0 16px rgba(190,255,90,0.55)",
-          transition: "all 0.3s ease",
-          zIndex: 9999,
-        }}
-        onMouseEnter={(e) =>
-          (e.currentTarget.style.boxShadow = "0 0 22px rgba(200,255,100,0.9)")
-        }
-        onMouseLeave={(e) =>
-          (e.currentTarget.style.boxShadow = "0 0 16px rgba(190,255,90,0.55)")
-        }
-      >
-        ← Back to Home
-      </a>
+  href="https://energy-verse-portal.netlify.app/?feature=10"
+  className="btn-back-center"
+>
+  ← Back to Home
+</a>
+
 
       <div className="wrap">
         {/* Title */}
