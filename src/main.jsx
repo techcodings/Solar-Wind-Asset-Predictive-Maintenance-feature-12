@@ -21,96 +21,59 @@ function useAsync(d=null){
   };
 }
 
-const App=()=>{
-  const [assets,setAssets]=React.useState([
-    {id:'solar-1',type:'solar',efficiencyHist:[0.92,0.91,0.90,0.89], env:{tempC:42}, envHist:{tempC:[35,37,39,41]}},
-    {id:'wind-2', type:'wind', efficiencyHist:[0.88,0.885,0.882,0.879], env:{windSpeed:15}, envHist:{windSpeed:[9,12,14,16]}}
+const App = () => {
+  const [assets, setAssets] = React.useState([
+    { id: 'solar-1', type: 'solar', efficiencyHist: [0.92, 0.91, 0.9, 0.89], env: { tempC: 42 }, envHist: { tempC: [35, 37, 39, 41] } },
+    { id: 'wind-2', type: 'wind', efficiencyHist: [0.88, 0.885, 0.882, 0.879], env: { windSpeed: 15 }, envHist: { windSpeed: [9, 12, 14, 16] } }
   ]);
 
-  const risk=useAsync(), ttm=useAsync(), corr=useAsync();
-  const avgEff=(assets.reduce((s,a)=>s+(a.efficiencyHist?.at(-1)||0),0)/assets.length).toFixed(3);
+  const risk = useAsync(), ttm = useAsync(), corr = useAsync();
+  const avgEff = (assets.reduce((s, a) => s + (a.efficiencyHist?.at(-1) || 0), 0) / assets.length).toFixed(3);
 
   return (
-    <div className='wrap'>
+    <>
+      {/* ✅ FIXED “Back to Home” on top-right */}
+      <a
+        href="https://energy-verse-portal.netlify.app/?feature=10"
+        className="btn-back-top"
+        style={{
+          position: "fixed",
+          top: "16px",
+          right: "24px",
+          background: "linear-gradient(90deg, #d8ff4b, #9aff64)",
+          color: "#0b0f06",
+          padding: "10px 18px",
+          borderRadius: "10px",
+          fontWeight: "700",
+          textDecoration: "none",
+          boxShadow: "0 0 16px rgba(190,255,90,0.55)",
+          transition: "all 0.3s ease",
+          zIndex: 9999,
+        }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.boxShadow = "0 0 22px rgba(200,255,100,0.9)")
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.boxShadow = "0 0 16px rgba(190,255,90,0.55)")
+        }
+      >
+        ← Back to Home
+      </a>
 
-      {/* Title */}
-     <div className="title" style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
+      <div className="wrap">
+        {/* Title */}
+        <div className="title" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div>
+            <h1>⚙️ Predictive Maintenance — Dashboard</h1>
+            <div className="sub">Real-time risk assessment • failure forecasting • environmental correlation</div>
+          </div>
 
-  {/* ✅ Back to Home button (top right) */}
-  <a
-  href="https://energy-verse-portal.netlify.app/?feature=10"
-  className="btn-back-top"
-  style={{
-    position: "fixed",
-    top: "16px",
-    right: "24px",
-    background: "linear-gradient(90deg, #d8ff4b, #9aff64)",
-    color: "#0b0f06",
-    padding: "10px 18px",
-    borderRadius: "10px",
-    fontWeight: "700",
-    textDecoration: "none",
-    boxShadow: "0 0 16px rgba(190,255,90,0.55)",
-    transition: "all 0.3s ease",
-    zIndex: 9999,
-  }}
-  onMouseEnter={(e) =>
-    (e.currentTarget.style.boxShadow = "0 0 22px rgba(200,255,100,0.9)")
-  }
-  onMouseLeave={(e) =>
-    (e.currentTarget.style.boxShadow = "0 0 16px rgba(190,255,90,0.55)")
-  }
->
-  ← Back to Home
-</a>
-
-
-  <div style={{ flex: "1 1 auto", paddingRight: "180px" }}>
-    <h1
-      style={{
-        color: "#d8ff4b",
-        textShadow: "0 0 10px rgba(200,255,80,0.6)",
-        marginBottom: "4px",
-      }}
-    >
-      ⚙️ Predictive Maintenance — Dashboard
-    </h1>
-    <div
-      className="sub"
-      style={{
-        color: "#baff7b",
-        textShadow: "0 0 6px rgba(180,255,100,0.4)",
-        fontWeight: 500,
-      }}
-    >
-      Real-time risk assessment • failure forecasting • environmental correlation
-    </div>
-  </div>
-
-  {/* Toolbar Buttons */}
-  <div className="toolbar" style={{ marginTop: "6px" }}>
-    <button
-      className="btn"
-      onClick={() =>
-        risk.run(callFn("asset_predictive_maintenance", { assets }))
-      }
-    >
-      Score Risk
-    </button>
-    <button
-      className="btn"
-      onClick={() => ttm.run(callFn("asset_ttm_forecast", { assets }))}
-    >
-      TTM Forecast
-    </button>
-    <button
-      className="btn"
-      onClick={() => corr.run(callFn("asset_env_correlation", { assets }))}
-    >
-      Correlate
-    </button>
-  </div>
-</div>
+          <div className="toolbar" style={{ marginTop: "6px" }}>
+            <button className="btn" onClick={() => risk.run(callFn("asset_predictive_maintenance", { assets }))}>Score Risk</button>
+            <button className="btn" onClick={() => ttm.run(callFn("asset_ttm_forecast", { assets }))}>TTM Forecast</button>
+            <button className="btn" onClick={() => corr.run(callFn("asset_env_correlation", { assets }))}>Correlate</button>
+          </div>
+        </div>
 
 
       {/* KPI cards */}
