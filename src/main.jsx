@@ -31,157 +31,158 @@ const App = () => {
   const avgEff = (assets.reduce((s, a) => s + (a.efficiencyHist?.at(-1) || 0), 0) / assets.length).toFixed(3)
 
   return (
-    <>
-      {/* ✅ Fixed Back to Home (Top-Center) */}
-      <a
-        href="https://energy-verse-portal.netlify.app/?feature=10"
-        className="btn-back-center"
-      >
-        ← Back to Home
-      </a>
+    <div className="wrap">
 
-      <div className='wrap'>
-        {/* Title */}
-        <div className="title" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
-          <div>
-            <h1>⚙️ Predictive Maintenance — Dashboard</h1>
-            <div className="sub">Real-time risk assessment • failure forecasting • environmental correlation</div>
-          </div>
+      {/* ✅ Back to Home (top center, scrolls away) */}
+      <div className="btn-back-container">
+        <a
+          href="https://energy-verse-portal.netlify.app/?feature=10"
+          className="btn-back-scroll"
+        >
+          ← Back to Home
+        </a>
+      </div>
 
-          <div className="toolbar" style={{ marginTop: "6px" }}>
-            <button className="btn" onClick={() => risk.run(callFn("asset_predictive_maintenance", { assets }))}>Score Risk</button>
-            <button className="btn" onClick={() => ttm.run(callFn("asset_ttm_forecast", { assets }))}>TTM Forecast</button>
-            <button className="btn" onClick={() => corr.run(callFn("asset_env_correlation", { assets }))}>Correlate</button>
-          </div>
+      {/* Title */}
+      <div className="title">
+        <div>
+          <h1>⚙️ Predictive Maintenance — Dashboard</h1>
+          <div className="sub">Real-time risk assessment • failure forecasting • environmental correlation</div>
         </div>
 
-        {/* KPI cards */}
-        <div className='kpis'>
-          <KPI label='Assets' value={assets.length} />
-          <KPI label='Avg Efficiency (last)' value={avgEff} />
-          <KPI label='History Points' value={assets[0].efficiencyHist.length} />
-          <KPI label='Editable' value='Yes' hint='Modify inputs below' />
-        </div>
-
-        {/* Layout */}
-        <div className='grid' style={{ marginTop: 16 }}>
-          <div className='leftcol'>
-            <div className='card'>
-              <h3>Assets</h3>
-
-              {assets.map((a, i) => (
-                <div key={i} className='asset'>
-                  <div className='row'>
-                    <input className='small' value={a.id}
-                      onChange={e => {
-                        const n = assets.slice(); n[i] = { ...n[i], id: e.target.value }; setAssets(n);
-                      }} />
-                    <select className='type' value={a.type}
-                      onChange={e => {
-                        const n = assets.slice(); n[i] = { ...n[i], type: e.target.value }; setAssets(n);
-                      }}>
-                      <option value='solar'>solar</option>
-                      <option value='wind'>wind</option>
-                    </select>
-                    <button className='btn btn-danger'
-                      onClick={() => setAssets(assets.filter((_, k) => k !== i))}>
-                      Remove
-                    </button>
-                  </div>
-
-                  <label>Efficiency History (comma)</label>
-                  <input
-                    value={(a.efficiencyHist || []).join(',')}
-                    onChange={e => {
-                      const n = assets.slice();
-                      n[i] = { ...n[i], efficiencyHist: e.target.value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x)) };
-                      setAssets(n);
-                    }}
-                  />
-
-                  <label>Env History ({a.type === 'solar' ? 'tempC' : 'windSpeed'}, comma)</label>
-                  <input
-                    value={a.type === 'solar' ? (a.envHist?.tempC || []).join(',') : (a.envHist?.windSpeed || []).join(',')}
-                    onChange={e => {
-                      const n = assets.slice();
-                      n[i] = {
-                        ...n[i],
-                        envHist: a.type === 'solar'
-                          ? { tempC: e.target.value.split(',').map(v => +v) }
-                          : { windSpeed: e.target.value.split(',').map(v => +v) }
-                      };
-                      setAssets(n);
-                    }}
-                  />
-                </div>
-              ))}
-
-              <div className='row'>
-                <button className='btn'
-                  onClick={() => setAssets([...assets, { id: `asset-${assets.length + 1}`, type: 'solar', efficiencyHist: [0.9, 0.89, 0.88] }])}>
-                  Add Asset
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Right column – results */}
-          <div className='rightcol'>
-
-            <div className='card col-span-12'>
-              <h3>Risk Scores</h3>
-              {risk.data
-                ? (
-                  <table>
-                    <thead>
-                      <tr><th>ID</th><th>Failure Prob.</th><th>Drop %/period</th></tr>
-                    </thead>
-                    <tbody>
-                      {risk.data.assets.map(x => (
-                        <tr key={x.id}>
-                          <td>{x.id}</td>
-                          <td>{(x.failure_probability * 100).toFixed(1)}%</td>
-                          <td>{x.expected_drop_pct_per_period}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                )
-                : <div className='muted'>Click “Score Risk” to fetch.</div>
-              }
-            </div>
-
-            <div className='card col-span-6'>
-              <h3>TTM Forecast (days)</h3>
-              {ttm.data
-                ? (
-                  <ResponsiveContainer width='100%' height={260}>
-                    <BarChart data={ttm.data.forecast}>
-                      <CartesianGrid stroke='rgba(160,255,80,0.15)' strokeDasharray='3 3' />
-                      <XAxis dataKey='id' tick={{ fill: '#8fdea1', fontSize: 12 }} />
-                      <YAxis tick={{ fill: '#8fdea1', fontSize: 12 }} />
-                      <Tooltip />
-                      <Legend />
-                      <Bar dataKey='ttm_days' fill='#a6ff55' />
-                    </BarChart>
-                  </ResponsiveContainer>
-                )
-                : <div className='muted'>Click “TTM Forecast”.</div>
-              }
-            </div>
-
-            <div className='card col-span-6'>
-              <h3>Env Correlations</h3>
-              {corr.data
-                ? <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{JSON.stringify(corr.data, null, 2)}</pre>
-                : <div className='muted'>Click “Correlate”.</div>
-              }
-            </div>
-
-          </div>
+        <div className="toolbar">
+          <button className="btn" onClick={() => risk.run(callFn("asset_predictive_maintenance", { assets }))}>Score Risk</button>
+          <button className="btn" onClick={() => ttm.run(callFn("asset_ttm_forecast", { assets }))}>TTM Forecast</button>
+          <button className="btn" onClick={() => corr.run(callFn("asset_env_correlation", { assets }))}>Correlate</button>
         </div>
       </div>
-    </>
+
+      {/* KPI cards */}
+      <div className='kpis'>
+        <KPI label='Assets' value={assets.length} />
+        <KPI label='Avg Efficiency (last)' value={avgEff} />
+        <KPI label='History Points' value={assets[0].efficiencyHist.length} />
+        <KPI label='Editable' value='Yes' hint='Modify inputs below' />
+      </div>
+
+      {/* Layout */}
+      <div className='grid' style={{ marginTop: 16 }}>
+        <div className='leftcol'>
+          <div className='card'>
+            <h3>Assets</h3>
+
+            {assets.map((a, i) => (
+              <div key={i} className='asset'>
+                <div className='row'>
+                  <input className='small' value={a.id}
+                    onChange={e => {
+                      const n = assets.slice(); n[i] = { ...n[i], id: e.target.value }; setAssets(n);
+                    }} />
+                  <select className='type' value={a.type}
+                    onChange={e => {
+                      const n = assets.slice(); n[i] = { ...n[i], type: e.target.value }; setAssets(n);
+                    }}>
+                    <option value='solar'>solar</option>
+                    <option value='wind'>wind</option>
+                  </select>
+                  <button className='btn btn-danger'
+                    onClick={() => setAssets(assets.filter((_, k) => k !== i))}>
+                    Remove
+                  </button>
+                </div>
+
+                <label>Efficiency History (comma)</label>
+                <input
+                  value={(a.efficiencyHist || []).join(',')}
+                  onChange={e => {
+                    const n = assets.slice();
+                    n[i] = { ...n[i], efficiencyHist: e.target.value.split(',').map(x => Number(x.trim())).filter(x => !Number.isNaN(x)) };
+                    setAssets(n);
+                  }}
+                />
+
+                <label>Env History ({a.type === 'solar' ? 'tempC' : 'windSpeed'}, comma)</label>
+                <input
+                  value={a.type === 'solar' ? (a.envHist?.tempC || []).join(',') : (a.envHist?.windSpeed || []).join(',')}
+                  onChange={e => {
+                    const n = assets.slice();
+                    n[i] = {
+                      ...n[i],
+                      envHist: a.type === 'solar'
+                        ? { tempC: e.target.value.split(',').map(v => +v) }
+                        : { windSpeed: e.target.value.split(',').map(v => +v) }
+                    };
+                    setAssets(n);
+                  }}
+                />
+              </div>
+            ))}
+
+            <div className='row'>
+              <button className='btn'
+                onClick={() => setAssets([...assets, { id: `asset-${assets.length + 1}`, type: 'solar', efficiencyHist: [0.9, 0.89, 0.88] }])}>
+                Add Asset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right column – results */}
+        <div className='rightcol'>
+
+          <div className='card col-span-12'>
+            <h3>Risk Scores</h3>
+            {risk.data
+              ? (
+                <table>
+                  <thead>
+                    <tr><th>ID</th><th>Failure Prob.</th><th>Drop %/period</th></tr>
+                  </thead>
+                  <tbody>
+                    {risk.data.assets.map(x => (
+                      <tr key={x.id}>
+                        <td>{x.id}</td>
+                        <td>{(x.failure_probability * 100).toFixed(1)}%</td>
+                        <td>{x.expected_drop_pct_per_period}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )
+              : <div className='muted'>Click “Score Risk” to fetch.</div>
+            }
+          </div>
+
+          <div className='card col-span-6'>
+            <h3>TTM Forecast (days)</h3>
+            {ttm.data
+              ? (
+                <ResponsiveContainer width='100%' height={260}>
+                  <BarChart data={ttm.data.forecast}>
+                    <CartesianGrid stroke='rgba(160,255,80,0.15)' strokeDasharray='3 3' />
+                    <XAxis dataKey='id' tick={{ fill: '#8fdea1', fontSize: 12 }} />
+                    <YAxis tick={{ fill: '#8fdea1', fontSize: 12 }} />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey='ttm_days' fill='#a6ff55' />
+                  </BarChart>
+                </ResponsiveContainer>
+              )
+              : <div className='muted'>Click “TTM Forecast”.</div>
+            }
+          </div>
+
+          <div className='card col-span-6'>
+            <h3>Env Correlations</h3>
+            {corr.data
+              ? <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{JSON.stringify(corr.data, null, 2)}</pre>
+              : <div className='muted'>Click “Correlate”.</div>
+            }
+          </div>
+
+        </div>
+      </div>
+    </div>
   )
 }
 
