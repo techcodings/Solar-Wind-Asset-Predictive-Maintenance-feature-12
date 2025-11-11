@@ -34,17 +34,83 @@ const App=()=>{
     <div className='wrap'>
 
       {/* Title */}
-      <div className='title'>
-        <div>
-          <h1>Predictive Maintenance — Dashboard</h1>
-          <div className='sub'>Risk, time-to-maintenance and env correlations.</div>
-        </div>
-        <div className='toolbar'>
-          <button className='btn' onClick={()=>risk.run(callFn('asset_predictive_maintenance',{assets}))}>Score Risk</button>
-          <button className='btn' onClick={()=>ttm.run(callFn('asset_ttm_forecast',{assets}))}>TTM Forecast</button>
-          <button className='btn' onClick={()=>corr.run(callFn('asset_env_correlation',{assets}))}>Correlate</button>
-        </div>
-      </div>
+     <div className="title" style={{ position: "relative", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
+
+  {/* ✅ Back to Home button (top right) */}
+  <a
+    href="https://energy-verse-portal.netlify.app/?feature=10"
+    className="btn-back-top"
+    style={{
+      position: "absolute",
+      top: "0",
+      right: "0",
+      background: "linear-gradient(90deg, #d8ff4b, #9aff64)",
+      color: "#0b0f06",
+      padding: "8px 16px",
+      borderRadius: "10px",
+      fontWeight: "700",
+      textDecoration: "none",
+      boxShadow: "0 0 14px rgba(190,255,90,0.55)",
+      transition: "all 0.3s ease",
+      zIndex: 1000,
+    }}
+    onMouseEnter={(e) =>
+      (e.currentTarget.style.boxShadow = "0 0 22px rgba(200,255,100,0.9)")
+    }
+    onMouseLeave={(e) =>
+      (e.currentTarget.style.boxShadow = "0 0 14px rgba(190,255,90,0.55)")
+    }
+  >
+    ← Back to Home
+  </a>
+
+  <div style={{ flex: "1 1 auto", paddingRight: "180px" }}>
+    <h1
+      style={{
+        color: "#d8ff4b",
+        textShadow: "0 0 10px rgba(200,255,80,0.6)",
+        marginBottom: "4px",
+      }}
+    >
+      ⚙️ Predictive Maintenance — Dashboard
+    </h1>
+    <div
+      className="sub"
+      style={{
+        color: "#baff7b",
+        textShadow: "0 0 6px rgba(180,255,100,0.4)",
+        fontWeight: 500,
+      }}
+    >
+      Real-time risk assessment • failure forecasting • environmental correlation
+    </div>
+  </div>
+
+  {/* Toolbar Buttons */}
+  <div className="toolbar" style={{ marginTop: "6px" }}>
+    <button
+      className="btn"
+      onClick={() =>
+        risk.run(callFn("asset_predictive_maintenance", { assets }))
+      }
+    >
+      Score Risk
+    </button>
+    <button
+      className="btn"
+      onClick={() => ttm.run(callFn("asset_ttm_forecast", { assets }))}
+    >
+      TTM Forecast
+    </button>
+    <button
+      className="btn"
+      onClick={() => corr.run(callFn("asset_env_correlation", { assets }))}
+    >
+      Correlate
+    </button>
+  </div>
+</div>
+
 
       {/* KPI cards */}
       <div className='kpis'>
