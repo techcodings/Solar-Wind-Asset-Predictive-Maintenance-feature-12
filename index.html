@@ -85,6 +85,27 @@
     box-shadow: 0 0 22px rgba(190, 255, 80, 0.9);
   }
 }
+.btn-back-top {
+  animation: pulseGlow 2s infinite alternate;
+}
+@keyframes pulseGlow {
+  from {
+    box-shadow: 0 0 10px rgba(186, 255, 55, 0.4);
+  }
+  to {
+    box-shadow: 0 0 22px rgba(190, 255, 80, 0.9);
+  }
+}
+
+/* Responsive fix for smaller screens */
+@media (max-width: 768px) {
+  .btn-back-top {
+    top: 10px;
+    right: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
 
 /* Responsive layout fix */
 @media (max-width: 768px) {
