@@ -96,6 +96,30 @@
     box-shadow: 0 0 22px rgba(190, 255, 80, 0.9);
   }
 }
+.btn-back-center {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #d8ff4b, #9aff64);
+  color: #0b0f06;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 0 18px rgba(190, 255, 90, 0.55);
+  transition: all 0.3s ease;
+  z-index: 9999;
+  animation: pulseGlow 2s infinite alternate;
+}
+.btn-back-center:hover {
+  box-shadow: 0 0 26px rgba(200, 255, 100, 0.9);
+}
+
+@keyframes pulseGlow {
+  from { box-shadow: 0 0 10px rgba(186, 255, 55, 0.4); }
+  to { box-shadow: 0 0 22px rgba(190, 255, 80, 0.9); }
+}
 
 /* Responsive fix for smaller screens */
 @media (max-width: 768px) {
